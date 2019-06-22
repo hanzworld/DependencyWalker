@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="TestSolution\**" />
+    <EmbeddedResource Remove="TestSolution\**" />
+    <None Remove="TestSolution\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="Moq" Version="4.12.0" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.11" />
+    <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DependencyWalker\DependencyWalker.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MvsSln">
+      <HintPath>..\..\..\Users\hannah.gray\.nuget\packages\mvssln\2.2.0\lib\net40\MvsSln.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="tree-json-schema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

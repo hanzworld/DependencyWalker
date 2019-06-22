@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyWalker", "DependencyWalker\DependencyWalker.csproj", "{59CE290A-E406-4784-BE88-AA299A66BD8E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyWalkerTests", "DependencyWalkerTests\DependencyWalkerTests.csproj", "{B930DA43-6155-46B4-BD3E-51C21E578E6E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59CE290A-E406-4784-BE88-AA299A66BD8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59CE290A-E406-4784-BE88-AA299A66BD8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59CE290A-E406-4784-BE88-AA299A66BD8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59CE290A-E406-4784-BE88-AA299A66BD8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B930DA43-6155-46B4-BD3E-51C21E578E6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B930DA43-6155-46B4-BD3E-51C21E578E6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B930DA43-6155-46B4-BD3E-51C21E578E6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B930DA43-6155-46B4-BD3E-51C21E578E6E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {81ED6D19-D8C7-4A44-BCA9-278FD47C5221}
+	EndGlobalSection
+EndGlobal

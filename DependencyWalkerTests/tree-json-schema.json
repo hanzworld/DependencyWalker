@@ -1,0 +1,112 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "Projects",
+    "SolutionToAnalyse"
+  ],
+  "properties": {
+    "Projects": {
+      "$id": "#/properties/Projects",
+      "type": "array",
+      "title": "The Projects Schema",
+      "items": {
+        "$id": "#/properties/Projects/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "required": [
+          "Name"
+        ],
+        "properties": {
+          "Name": {
+            "$id": "#/properties/Projects/items/properties/Name",
+            "type": "string",
+            "title": "The Name Schema",
+            "default": "",
+            "examples": [
+              "FullFramework1"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "NugetDependencyTree": {
+            "$id": "#/properties/Projects/items/properties/NugetDependencyTree",
+            "type": "object",
+            "title": "The Nugetdependencytree Schema",
+            "default": null,
+            "required": [
+              "Packages"
+            ],
+            "properties": {
+              "Packages": {
+                "$id": "#/properties/Projects/items/properties/NugetDependencyTree/properties/Packages",
+                "type": "array",
+                "title": "The Packages Schema",
+                "items": {
+                  "$id": "#/properties/Projects/items/properties/NugetDependencyTree/properties/Packages/items",
+                  "type": "object",
+                  "title": "The Items Schema",
+                  "required": [
+                    "Package",
+                    "FoundDependencies"
+                  ],
+                  "properties": {
+                    "Package": {
+                      "$id": "#/properties/Projects/items/properties/NugetDependencyTree/properties/Packages/items/properties/Package",
+                      "type": "string",
+                      "title": "The Package Schema",
+                      "default": "",
+                      "examples": [
+                        "Newtonsoft.Json 12.0.2"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "FoundDependencies": {
+                      "$id": "#/properties/Projects/items/properties/NugetDependencyTree/properties/Packages/items/properties/FoundDependencies",
+                      "type": "array",
+                      "title": "The Founddependencies Schema"
+                    },
+                    "UnresolvedDependencies": {
+                      "$id": "#/properties/Projects/items/properties/NugetDependencyTree/properties/Packages/items/properties/UnresolvedDependencies",
+                      "type": "array",
+                      "title": "The Unresolveddependencies Schema",
+                      "default": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "ProjectDependencyTree": {
+            "$id": "#/properties/Projects/items/properties/ProjectDependencyTree",
+            "type": "object",
+            "title": "The Projectdependencytree Schema",
+            "default": null,
+            "required": [
+              "References"
+            ],
+            "properties": {
+              "References": {
+                "$id": "#/properties/Projects/items/properties/ProjectDependencyTree/properties/References",
+                "type": "array",
+                "title": "The References Schema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "SolutionToAnalyse": {
+      "$id": "#/properties/SolutionToAnalyse",
+      "type": "string",
+      "title": "The Solutiontoanalyse Schema",
+      "default": "",
+      "examples": [
+        "..\\..\\..\\TestSolution\\TestSolution.sln"
+      ],
+      "pattern": "^(.*)$"
+    }
+  }
+}
