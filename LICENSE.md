@@ -1,4 +1,20 @@
-# Json.NET Schema
+# Dependency Walker
+
+Copyright (c) 2019 The Gray Barn
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version, see <https://www.gnu.org/licenses/>.
+
+This program is distributed in the hope that it will be useful, but WITHOUT 
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+
+# This project benefits from the following unmodified software:
+
+## Json.NET Schema
 
 Copyright (c) 2014 Newtonsoft
 
@@ -12,6 +28,6 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
 
-## Commercial License
+### Commercial License
 
 In addition to this license, Json.NET Schema is offered under a commercial license.
