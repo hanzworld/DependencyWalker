@@ -178,6 +178,7 @@ namespace DependencyWalker
                     catch (InvalidOperationException)
                     {
                         //we ran into a collision due to parallel operations
+                        NumberOfCollisions++;
                         return FindPackage(id, version);
                     }
 
@@ -199,9 +200,37 @@ namespace DependencyWalker
 
         private IPackage ResolveDependency(PackageDependency dependency)
         {
-            foreach (var repository in packageRepositories)
+
+
+            try
             {
-                var package = repository.ResolveDependency(dependency, prerelease, true);
+                //this is an expensive lookup as it iterates over all packages with that id
+                //if we can jump straight to a specific version, do so
+                if (dependency.VersionSpec != null && (dependency.VersionSpec.MaxVersion == null ||
+                    dependency.VersionSpec.MaxVersion == dependency.VersionSpec.MinVersion))
+                {
+                    return FindPackage(dependency.Id, dependency.VersionSpec.MaxVersion);
+                }
+            }
+            catch (NullReferenceException e)
+            {
+                Log.Error(e,
+                    $"Couldn't resolve dependency. Dependency is {(dependency == null ? "null" : "not null")}. Version is {(dependency.VersionSpec == null ? "null" : "not null")}. {dependency}");
+                throw;
+            }
+
+            var uniqueidentifier = dependency.ToString();
+
+            //check the cache first
+            var package = dependencyCache[uniqueidentifier] as IPackage;
+
+            //otherwise ask one of our many Nuget servers
+            if (package == null)
+            {
+                foreach (var repository in packageRepositories)
+                {
+                    package = repository.ResolveDependency(dependency, prerelease, true);
+
                     //we found it, don't need to keep looking
                     if (package != null)
                     {
@@ -210,10 +239,13 @@ namespace DependencyWalker
                         return package;
                     }
 
-                //fallback to other nuget locations and see if it's there instead                
+                    //fallback to other nuget locations and see if it's there instead
+                }
+                //if we got here then we didn't find the package
+                return null;
             }
-            //if we got here then we didn't find the package
-            return null;
+
+            return package;
         }
 
         private void WarnDependencyNotFound(PackageDependency dependency)
