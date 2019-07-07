@@ -52,7 +52,8 @@ namespace DependencyWalkerTests
 
             var project3dependencies = tree.Projects.Single(p => p.Name.Contains("FullFramework3")).NugetDependencyTree.Packages;
 
-            Assert.Contains(project3dependencies, p => p.Package.Id == "ExcelDataReader" && p.FoundDependencies.Count > 0);
+            Assert.Contains(project3dependencies, p => p.Package.Id == "ExcelDataReader");
+            Assert.NotEmpty(project3dependencies.First(p => p.Package.Id == "ExcelDataReader").FoundDependencies);
         }
 
 

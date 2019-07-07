@@ -23,7 +23,8 @@ namespace DependencyWalker
         private readonly string solutionToAnalyse;
         private readonly List<IPackageRepository> packageRepositories;
         private readonly bool prerelease;
-        private ObjectCache cache = System.Runtime.Caching.MemoryCache.Default;
+        private ObjectCache packageCache = System.Runtime.Caching.MemoryCache.Default;
+        private ObjectCache dependencyCache = System.Runtime.Caching.MemoryCache.Default;
 
         public Walker(string solutionToAnalyse, List<IPackageRepository> packageRepositories, bool prerelease)
         {
@@ -92,20 +93,26 @@ namespace DependencyWalker
             //create a Nuget dependency tree for that project
             var tree = new NugetDependencyTree(project.FullPath, new DirectoryInfo(project.DirectoryPath));
             //find the first level of packages
-            foreach (PackageReference packageReference in tree.Source.GetPackageReferences())
+            ConcurrentBag<IPackage> collection = new ConcurrentBag<IPackage>();
             {
-
-                var package = FindPackage(packageReference.Id, packageReference.Version);
-                if (package == null)
+                Parallel.ForEach(tree.Source.GetPackageReferences(), reference =>
                 {
-                    WarnDependencyNotFound(packageReference);
-                    continue;
-                }
-                tree.AddRoot(package);
+                    var package = FindPackage(reference.Id, reference.Version);
+                    if (package == null)
+                    {
+                        WarnDependencyNotFound(reference);
+                    }
+                    else
+                    {
+                        collection.Add(package);
+                    }
+                });
             }
 
+            tree.AddRoots(collection.ToList());
 
             Log.Debug($"Found {tree.Packages.Count} root packages for {project.GetProjectName()}");
+
 
             //now iterate down the tree
             foreach (var package in tree.Packages)
@@ -126,21 +133,26 @@ namespace DependencyWalker
                 return;
             }
 
-            foreach (PackageDependency dependency in dependencies)
+            ConcurrentBag<object> results = new ConcurrentBag<object>();
+
+            Parallel.ForEach(dependencies, dependency =>
             {
                 IPackage subPackage = ResolveDependency(dependency);
                 if (subPackage != null)
                 {
-                    var subDependency = package.AddDependency(subPackage);
-                    Walk(subDependency, level + 1);
+                    var subDependency = new NugetDependency(subPackage);
+                Walk(subDependency, level + 1);
+                    results.Add(subDependency);
                 }
                 else
                 {
                     WarnDependencyNotFound(dependency);
-                    package.AddDependency(dependency);
+                results.Add(dependency);
                 }
 
-            }
+            });
+
+            package.AddDependencies(results.ToList());
 
         }
 
@@ -149,8 +161,10 @@ namespace DependencyWalker
         //to prevent this, use a cache (which isn't a terrible idea so we stop thrashing the server!)
         private IPackage FindPackage(string id, SemanticVersion version)
         {
+            var uniqueidentifier = $"{id}-{version}";
+
             //check the cache first
-            var package = cache[$"{id}-{version}"] as IPackage;
+            var package = packageCache[uniqueidentifier] as IPackage;
 
             //otherwise ask one of our many Nuget servers
             if (package == null)
@@ -171,7 +185,7 @@ namespace DependencyWalker
                     if (package != null)
                     {
                         //cache it thanking you
-                        cache[$"{id}-{version}"] = package;
+                        packageCache[uniqueidentifier] = package;
                         return package;
                     }
 
@@ -188,8 +202,13 @@ namespace DependencyWalker
             foreach (var repository in packageRepositories)
             {
                 var package = repository.ResolveDependency(dependency, prerelease, true);
-                //we found it, don't need to keep looking
-                if (package != null) return package;
+                    //we found it, don't need to keep looking
+                    if (package != null)
+                    {
+                        //cache it thanking you
+                        dependencyCache[uniqueidentifier] = package;
+                        return package;
+                    }
 
                 //fallback to other nuget locations and see if it's there instead                
             }

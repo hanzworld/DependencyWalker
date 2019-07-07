@@ -19,11 +19,10 @@ namespace DependencyWalker.Model
             Package = package;
         }
 
-        public INugetDependency AddDependency(IPackage subPackage)
+        public void AddDependency(IPackage subPackage)
         {
             var x = new NugetDependency(subPackage);
             FoundDependencies.Add(x);
-            return x;
         }
 
 
@@ -32,12 +31,35 @@ namespace DependencyWalker.Model
             UnresolvedDependencies.Add(subPackage);
         }
 
+        public void AddDependency<T>(object subPackage) where T : PackageDependency
+        {
+            UnresolvedDependencies.Add(subPackage as T);
+        }
+
         public override string ToString()
         {
             return Package.ToString();
         }
 
+        public void AddDependencies(List<object> list)
+        {
+            foreach (var item in list)
+            {
+                if (item is IPackage package)
+                {
+                    AddDependency(package);
+                }
 
+                if (item is PackageDependency dependency)
+                {
+                    AddDependency(dependency);
+                }
+				if (item is NugetDependency dependency)
+				{
+					FoundDependencies.Add(dependency);
+				}
+            }
+        }
     }
 
 }

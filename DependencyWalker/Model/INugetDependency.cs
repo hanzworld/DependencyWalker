@@ -13,7 +13,7 @@ namespace DependencyWalker.Model
         List<PackageDependency> UnresolvedDependencies { get; }
 
         string ToString();
-        INugetDependency AddDependency(IPackage subPackage);
         void AddDependency(PackageDependency subPackage);
+        void AddDependencies(List<object> list);
     }
 }

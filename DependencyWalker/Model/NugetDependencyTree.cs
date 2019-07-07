@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using NuGet;
 using Serilog;
@@ -57,5 +58,9 @@ namespace DependencyWalker.Model
             Packages.Add(new NugetDependency(package));
         }
 
+        internal void AddRoots(List<IPackage> list)
+        {
+            Packages.AddRange(list.Select(p => new NugetDependency(p)));
+        }
     }
 }
