@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Caching;
-using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
-using System.Text;
 using System.Threading.Tasks;
 using DependencyWalker.Model;
 using Microsoft.Build.Evaluation;
@@ -23,8 +20,8 @@ namespace DependencyWalker
         private readonly string solutionToAnalyse;
         private readonly List<IPackageRepository> packageRepositories;
         private readonly bool prerelease;
-        private ObjectCache packageCache = System.Runtime.Caching.MemoryCache.Default;
-        private ObjectCache dependencyCache = System.Runtime.Caching.MemoryCache.Default;
+        private readonly ObjectCache packageCache = System.Runtime.Caching.MemoryCache.Default;
+        private readonly ObjectCache dependencyCache = System.Runtime.Caching.MemoryCache.Default;
         private int NumberOfCollisions;
 
         public int NumberOfUnfoundPackages { get; private set; }
@@ -79,7 +76,7 @@ namespace DependencyWalker
             return masterTree;
         }
 
-        private IProjectDependencyTree WalkProjects(Project project)
+        private static IProjectDependencyTree WalkProjects(Project project)
         {
             //create a project dependency tree for that project
             var tree = new ProjectDependencyTree();
@@ -174,42 +171,43 @@ namespace DependencyWalker
             var package = packageCache[uniqueidentifier] as IPackage;
 
             //otherwise ask one of our many Nuget servers
-            if (package == null)
+            if (package != null)
             {
-                foreach (var repository in packageRepositories)
-                {
-                    try
-                    {
-                        package = repository.FindPackage(id, version, prerelease, true);
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        //we ran into a collision due to parallel operations
-                        NumberOfCollisions++;
-                        return FindPackage(id, version);
-                    }
-
-                    //we found it, don't need to keep looking
-                    if (package != null)
-                    {
-                        //cache it thanking you
-                        packageCache[uniqueidentifier] = package;
-                        return package;
-                    }
-
-                    //fallback to other nuget locations and see if it's there instead
-                }
-                //if we got here then we didn't find the package
-                NumberOfUnfoundPackages++;
-                return null;
+                return package;
             }
-            return package;
+
+            foreach (var repository in packageRepositories)
+            {
+                try
+                {
+                    package = repository.FindPackage(id, version, prerelease, true);
+                }
+                catch (InvalidOperationException)
+                {
+                    //we ran into a collision due to parallel operations
+                    NumberOfCollisions++;
+                    return FindPackage(id, version);
+                }
+
+                //we found it, don't need to keep looking
+                if (package == null)
+                {
+                    continue;
+                }
+
+                //cache it thanking you
+                packageCache[uniqueidentifier] = package;
+                return package;
+
+                //fallback to other nuget locations and see if it's there instead
+            }
+            //if we got here then we didn't find the package
+            NumberOfUnfoundPackages++;
+            return null;
         }
 
         private IPackage ResolveDependency(PackageDependency dependency)
         {
-
-
             try
             {
                 //this is an expensive lookup as it iterates over all packages with that id
@@ -233,35 +231,38 @@ namespace DependencyWalker
             var package = dependencyCache[uniqueidentifier] as IPackage;
 
             //otherwise ask one of our many Nuget servers
-            if (package == null)
+            if (package != null)
             {
-                foreach (var repository in packageRepositories)
-                {
-                    package = repository.ResolveDependency(dependency, prerelease, true);
-
-                    //we found it, don't need to keep looking
-                    if (package != null)
-                    {
-                        //cache it thanking you
-                        dependencyCache[uniqueidentifier] = package;
-                        return package;
-                    }
-
-                    //fallback to other nuget locations and see if it's there instead
-                }
-                //if we got here then we didn't find the package
-                return null;
+                return package;
             }
 
-            return package;
+            foreach (var repository in packageRepositories)
+            {
+                package = repository.ResolveDependency(dependency, prerelease, true);
+
+                //we found it, don't need to keep looking
+                if (package == null)
+                {
+                    continue;
+                }
+
+                //cache it thanking you
+                dependencyCache[uniqueidentifier] = package;
+                return package;
+
+                //fallback to other nuget locations and see if it's there instead
+            }
+            //if we got here then we didn't find the package
+            return null;
+
         }
 
-        private void WarnDependencyNotFound(PackageDependency dependency)
+        private static void WarnDependencyNotFound(PackageDependency dependency)
         {
             Log.Warning($"** Dependency {dependency} isn't on this server - did you get it elsewhere?");
         }
 
-        private void WarnDependencyNotFound(PackageReference reference)
+        private static void WarnDependencyNotFound(PackageReference reference)
         {
             Log.Warning($"** Dependency {reference} isn't on this server - did you get it elsewhere?");
         }

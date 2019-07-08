@@ -8,7 +8,6 @@ namespace DependencyWalker.Model
         [JsonIgnore]
         string[] Filter { get; set; }
         List<IProjectInSolution> Projects { get; }
-        string SolutionToAnalyse { get; }
 
         void Print();
     }

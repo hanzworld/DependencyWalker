@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using NuGet;
 
@@ -13,7 +12,6 @@ namespace DependencyWalker.Model
         List<PackageDependency> UnresolvedDependencies { get; }
 
         string ToString();
-        void AddDependency(PackageDependency subPackage);
         void AddDependencies(List<object> list);
     }
 }

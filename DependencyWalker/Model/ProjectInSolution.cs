@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Microsoft.Build.Evaluation;
-namespace DependencyWalker.Model
+﻿namespace DependencyWalker.Model
 {
     public class ProjectInSolution : IProjectInSolution
     {

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using DependencyWalker.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NuGet;

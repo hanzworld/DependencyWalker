@@ -31,7 +31,7 @@ namespace DependencyWalkerTests
 
     public class WalkerTests : IClassFixture<WalkerFixture>
     {
-        private WalkerFixture fixture;
+        private readonly WalkerFixture fixture;
 
         public WalkerTests(WalkerFixture fixture)
         {

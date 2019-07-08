@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using Serilog;
 
 namespace DependencyWalker.Model
 {
@@ -15,7 +12,6 @@ namespace DependencyWalker.Model
 
         public List<IProjectInSolution> Projects { get; internal set; }
         public string SolutionToAnalyse { get; }
-        
         public string[] Filter { get; set; }
 
         public void Print()
@@ -34,7 +30,7 @@ namespace DependencyWalker.Model
 
         //todo these should be in the NugetPcakgeInfo class, not here
 
-        private void Print(INugetDependency package, int level)
+        private static void Print(INugetDependency package, int level)
         {
             Log.Information("{0}{1}", new string(' ', level * 3), package.ToString());
             foreach (var dependency in package.UnresolvedDependencies)

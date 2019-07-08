@@ -2,11 +2,7 @@
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Versioning;
 using Microsoft.Extensions.DependencyInjection;
-using net.r_eg.MvsSln;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace DependencyWalker
@@ -14,11 +10,11 @@ namespace DependencyWalker
 
 
     public class Program
-    {        
+    {
         static readonly string[] PackageSources = {"https://www.nuget.org/api/v2/"};
         private static List<IPackageRepository> PackageRepositories;
         private static readonly string[] DependenciesOfInterest = { "Newtonsoft.Json" };
-        private const string SolutionToAnalyse = @"C:\dev\project\Something.sln";        
+        private const string SolutionToAnalyse = @"C:\dev\project\Something.sln";
         private const bool PreRelease = false;
         private static ServiceProvider ServiceProvider;
         public static void Main()
@@ -31,7 +27,7 @@ namespace DependencyWalker
                 PackageRepositories.Add(PackageRepositoryFactory.Default.CreateRepository(uri));
             }
 
-            //setup the logging file            
+            //setup the logging file
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)

@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using DependencyWalker;
 using NuGet;
 using DependencyWalker.Model;
 using Newtonsoft.Json;
-using Moq;
 using System.IO;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Linq;
-using System.Reflection;
 
 namespace DependencyWalkerTests
 {
@@ -43,7 +40,7 @@ namespace DependencyWalkerTests
 
     public class OutputTests : IClassFixture<OutputFixture>
     {
-        private OutputFixture fixture;
+        private readonly OutputFixture fixture;
 
         public OutputTests(OutputFixture fixture)
         {
@@ -79,7 +76,7 @@ namespace DependencyWalkerTests
         [Fact]
         public void EmptyCollectionsAreInitialisedOnDeserialize()
         {
-            var json = @"{}";
+            const string json = @"{}";
 
             var obj = JsonConvert.DeserializeObject<SolutionDependencyTree>(json);
             Assert.NotNull(obj.Projects);

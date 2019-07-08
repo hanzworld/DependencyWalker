@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using DependencyWalker;
 using DependencyWalker.Model;
-using Moq;
 using static DependencyWalkerTests.Helpers;
 
 namespace DependencyWalkerTests
@@ -13,14 +11,14 @@ namespace DependencyWalkerTests
     {
         public FilteringFixture()
         {
-            Data = new TestData[]
+            Data = new []
             {
                 new TestData("Project1", new [] {"Newtonsoft.Json"}),
                 new TestData("Project2", new [] {"RestSharp"}, new [] { "Subdependency"}),
                 new TestData("Project3", new[] {"RestSharp", "Newtonsoft.Json"}, new [] {"Subdependency"}, new [] { "Subsubdependency"})
         };
 
-            Tree = Helpers.CreateMeAMockDependencyTree(Data).Object;
+            Tree = CreateMeAMockDependencyTree(Data).Object;
         }
 
         public TestData[] Data { get; }
@@ -36,7 +34,7 @@ namespace DependencyWalkerTests
 
     public class FilteringTests : IClassFixture<FilteringFixture>
     {
-        FilteringFixture fixture;
+        readonly FilteringFixture fixture;
 
         public FilteringTests(FilteringFixture fixture)
         {
@@ -46,7 +44,7 @@ namespace DependencyWalkerTests
         [Fact]
         public void FlattensAndFiltersProjectToNugetRelationships()
         {
-            fixture.Tree.Filter = new string[] { "Newtonsoft.Json" };
+            fixture.Tree.Filter = new [] { "Newtonsoft.Json" };
             var pn = fixture.Tree.GetProjectToNugetRelationships();
 
             Assert.Contains(pn, n => n.Source.Name == fixture.Data[0].Project && n.Target.Package.Id == fixture.Data[0].Dependencies[0][0]);

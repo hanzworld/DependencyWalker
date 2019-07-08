@@ -4,22 +4,20 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using NuGet;
-using Serilog;
 
 namespace DependencyWalker.Model
 {
     [Serializable]
     public class NugetDependencyTree : INugetDependencyTree
     {
-        public List<INugetDependency> Packages { get; private set; }
+        public List<INugetDependency> Packages { get; }
         [JsonIgnore]
-        public PackageReferenceFile Source { get; private set; }
+        public PackageReferenceFile Source { get; }
 
 
-        public NugetDependencyTree(string projectName, DirectoryInfo directory)
+        public NugetDependencyTree(string projectName, FileSystemInfo directory)
         {
             Packages = new List<INugetDependency>();
-            
             Source = new PackageReferenceFile(Path.Combine(directory.FullName, "packages.config"));
         }
         public void Print()
@@ -30,16 +28,18 @@ namespace DependencyWalker.Model
             }
         }
 
-        private void Print(INugetDependency package, int level)
+        private static void Print(INugetDependency package, int level)
         {
             Log.Information("{0}{1}", new string(' ', level * 3), package.ToString());
             foreach (var dependency in package.UnresolvedDependencies)
             {
-                if (dependency == null)
+                if (dependency != null)
                 {
-                    WarnDependencyNotFound(level, dependency);
-                    return;
+                    continue;
                 }
+
+                WarnDependencyNotFound(level, package);
+                return;
             }
             foreach (var dependency in package.FoundDependencies)
             {

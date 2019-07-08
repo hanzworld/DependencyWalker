@@ -11,10 +11,10 @@ namespace DependencyWalker.Model
         }
 
         public List<IProjectDependency> References { get; set; }
-        
+
         internal void AddRoot(ProjectItem reference)
         {
-            References.Add(new ProjectDependency(){Name = reference.GetMetadataValue("Name")});
+            References.Add(new ProjectDependency{Name = reference.GetMetadataValue("Name")});
         }
     }
 }

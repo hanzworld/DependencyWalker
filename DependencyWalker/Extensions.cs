@@ -23,7 +23,7 @@ namespace DependencyWalker
         internal static IEnumerable<INugetDependency> GetPackagesThatMatchFilter(this List<INugetDependency> packages, ISolutionDependencyTree tree)
         {
 
-            //either we don't have a filter, it is directly something I'm interested in 
+            //either we don't have a filter, it is directly something I'm interested in
             // or one of its subdependencies is
             if (tree.Filter == null || tree.Filter.Length == 0)
             {
@@ -42,8 +42,7 @@ namespace DependencyWalker
             IEnumerable<NugetRelationship> GetChildren(INugetDependency package)
             {
                 var toReturn = new List<NugetRelationship>();
-                
-                var subpackages = package.FoundDependencies.GetPackagesThatMatchFilter(tree);
+                var subpackages = package.FoundDependencies.GetPackagesThatMatchFilter(tree).ToList();
                 foreach (var p in subpackages)
                 {
                     toReturn.Add(new NugetRelationship {Source = package, Target = p});
@@ -52,19 +51,16 @@ namespace DependencyWalker
                 foreach (var dependency in subpackages)
                 {
                      GetChildren(dependency);
-                    //yield return new NugetRelationship {Source = package, Target = dependency.Source};
                 }
                 return toReturn;
             }
 
-            
             List<NugetRelationship> x = new List<NugetRelationship>();
             //get all the packages of this tree
             foreach (var proj in tree.Projects)
             {
                 var DependenciesToChase =  proj.NugetDependencyTree.Packages.GetPackagesThatMatchFilter(tree);
                 x.AddRange(DependenciesToChase.SelectMany(GetChildren));
-                    
             }
 
             //and finally de-duplicate
@@ -85,12 +81,15 @@ namespace DependencyWalker
             return toReturn;
         }
 
-        internal static List<ProjectProjectRelationship> GetProjectToProjectRelationships(this ISolutionDependencyTree tree)
+        internal static List<ProjectProjectRelationship> GetProjectToProjectRelationships(
+            this ISolutionDependencyTree tree)
         {
-            return tree.Projects.SelectMany(p => p.ProjectDependencyTree.References.Select(proj => new ProjectProjectRelationship { Source = p, Target = proj })).ToList();
+            return tree.Projects.SelectMany(p =>
+                p.ProjectDependencyTree.References.Select(proj => new ProjectProjectRelationship
+                    {Source = p, Target = proj})).ToList();
 
         }
-        
+
         public class NugetRelationship
         {
             public INugetDependency Source { get; set; }
@@ -110,6 +109,4 @@ namespace DependencyWalker
             public IProjectDependency Target { get; set; }
         }
     }
-
-    
 }

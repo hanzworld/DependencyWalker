@@ -1,10 +1,7 @@
 ﻿using DependencyWalker.Model;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DependencyWalkerTests
 {
@@ -33,7 +30,7 @@ namespace DependencyWalkerTests
         }
 
 
-        private static IEnumerable<IProjectInSolution> CreateProjects(TestData[] data)
+        private static IEnumerable<IProjectInSolution> CreateProjects(IEnumerable<TestData> data)
         {
             foreach (var row in data)
             {
@@ -45,9 +42,9 @@ namespace DependencyWalkerTests
         }
 
 
-        private static IEnumerable<INugetDependency> CreatePackages(string[][] packages, int depth)
+        private static IEnumerable<INugetDependency> CreatePackages(IReadOnlyList<string[]> packages, int depth)
         {
-            if (depth >= packages.Length) yield break;
+            if (depth >= packages.Count) yield break;
 
             foreach (var package in packages[depth])
             {

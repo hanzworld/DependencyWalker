@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using NuGet;
 
@@ -7,9 +6,9 @@ namespace DependencyWalker.Model
 {
     public class NugetDependency : INugetDependency
     {
-        public IPackage Package { get; private set; }
-        public List<INugetDependency> FoundDependencies { get; private set; }
-        public List<PackageDependency> UnresolvedDependencies { get; private set; }
+        public IPackage Package { get; }
+        public List<INugetDependency> FoundDependencies { get; }
+        public List<PackageDependency> UnresolvedDependencies { get; }
 
         [JsonConstructor]
         public NugetDependency(IPackage package)
@@ -45,19 +44,19 @@ namespace DependencyWalker.Model
         {
             foreach (var item in list)
             {
-                if (item is IPackage package)
+                switch (item)
                 {
-                    AddDependency(package);
+                    case IPackage package:
+                        AddDependency(package);
+                        break;
+                    case PackageDependency dependency:
+                        AddDependency(dependency);
+                        break;
+                    case NugetDependency dependency:
+                        FoundDependencies.Add(dependency);
+                        break;
                 }
 
-                if (item is PackageDependency dependency)
-                {
-                    AddDependency(dependency);
-                }
-				if (item is NugetDependency dependency)
-				{
-					FoundDependencies.Add(dependency);
-				}
             }
         }
     }

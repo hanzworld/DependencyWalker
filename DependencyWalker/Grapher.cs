@@ -1,23 +1,20 @@
 ﻿
-using Serilog;
 using System.Linq;
 using System.Xml.Linq;
 using DependencyWalker.Model;
 
 namespace DependencyWalker
 {
-    internal static partial class Grapher
+    internal static class Grapher
     {
         private static readonly XNamespace dgmlns = "http://schemas.microsoft.com/vs/2009/dgml";
-
-        
 
         internal static void GenerateDGML(ISolutionDependencyTree tree)
         {
 
-            var pn = tree.GetProjectToNugetRelationships();
-            var nn = tree.GetNugetToNugetRelationships();
-            var pp = tree.GetProjectToProjectRelationships();
+            var pn = tree.GetProjectToNugetRelationships().ToList();
+            var nn = tree.GetNugetToNugetRelationships().ToList();
+            var pp = tree.GetProjectToProjectRelationships().ToList();
 
 
             var graph = new XElement(
@@ -26,12 +23,12 @@ namespace DependencyWalker
                 new XElement(dgmlns + "Nodes",
                     tree.Projects.Select(p => CreateNode(p.Name, "Project")),
                     nn.Select(r => CreateNode(r.Source.Package.Id, "Package")),
-                    nn.Select(r => CreateNode(r.Target.Package.Id, "Package"))                   
+                    nn.Select(r => CreateNode(r.Target.Package.Id, "Package"))
                 ),
                 new XElement(dgmlns + "Links",
                     pn.Select(r => CreateLink(r.Source.Name, r.Target.Package.Id, "Package Reference")),
                     nn.Select(r => CreateLink(r.Source.Package.Id, r.Target.Package.Id, "Nuget Subdependency")),
-                    pp.Select(r => CreateLink(r.Source.Name, r.Target.Name, "Project Reference"))                
+                    pp.Select(r => CreateLink(r.Source.Name, r.Target.Name, "Project Reference"))
                 ),
                 // No need to declare Categories, auto generated
                 new XElement(dgmlns + "Styles",
@@ -44,10 +41,10 @@ namespace DependencyWalker
 
         }
 
-        private static XElement CreateNode(string name, string category, string label = null, string @group = null)
+        private static XElement CreateNode(string name, string category, string label = null, string group = null)
         {
             var labelAtt = label != null ? new XAttribute("Label", label) : null;
-            var groupAtt = @group != null ? new XAttribute("Group", @group) : null;
+            var groupAtt = group != null ? new XAttribute("Group", group) : null;
             return new XElement(dgmlns + "Node", new XAttribute("Id", name), labelAtt, groupAtt,
                 new XAttribute("Category", category));
         }
