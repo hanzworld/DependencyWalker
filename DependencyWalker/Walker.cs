@@ -25,6 +25,9 @@ namespace DependencyWalker
         private readonly bool prerelease;
         private ObjectCache packageCache = System.Runtime.Caching.MemoryCache.Default;
         private ObjectCache dependencyCache = System.Runtime.Caching.MemoryCache.Default;
+        private int NumberOfCollisions;
+
+        public int NumberOfUnfoundPackages { get; private set; }
 
         public Walker(string solutionToAnalyse, List<IPackageRepository> packageRepositories, bool prerelease)
         {
@@ -66,6 +69,8 @@ namespace DependencyWalker
                     ProjectDependencyTree = WalkProjects(project)
                 };
                 collection.Add(newProject);
+                Log.Information($"So far, had {NumberOfCollisions} collisions.");
+                Log.Information($"So far, had {NumberOfUnfoundPackages} unfound packages.");
             }
             );
 
@@ -122,6 +127,7 @@ namespace DependencyWalker
             }
 
             Log.Debug($"Finished walking packages for {project.GetProjectName()}");
+            Log.Debug($"Cache has {packageCache.GetCount()} items");
 
             return tree;
         }
@@ -194,6 +200,7 @@ namespace DependencyWalker
                     //fallback to other nuget locations and see if it's there instead
                 }
                 //if we got here then we didn't find the package
+                NumberOfUnfoundPackages++;
                 return null;
             }
             return package;
