@@ -36,11 +36,12 @@ namespace DependencyWalker
 
         public List<Project> Load()
         {
+            var projectCollection = new ProjectCollection();
+
             List<Project> projects = new List<Project>();
 
             using (var sln = new Sln(solutionToAnalyse, SlnItems.Projects))
             {
-                var projectCollection = new ProjectCollection();
 
                 foreach (var p in sln.Result.ProjectItems)
                 {
