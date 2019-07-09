@@ -6,7 +6,6 @@ using System.IO;
 using System.Runtime.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 using net.r_eg.MvsSln;
-using App.Metrics;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
@@ -41,7 +40,6 @@ namespace DependencyWalker
 
             //setup DI
             ServiceProvider = new ServiceCollection()
-                .AddSingleton<IMetrics>(new MetricsBuilder().Build())
                 .AddSingleton<List<IPackageRepository>>(PackageRepositories)
                 .AddSingleton<IWalker>(w => new Walker(SolutionToAnalyse, PackageRepositories, PreRelease))
                 .BuildServiceProvider();
