@@ -9,9 +9,7 @@ namespace DependencyWalker.Model
         List<INugetDependency> FoundDependencies { get; }
         [JsonConverter(typeof(IPackageConverter))]
         IPackage Package { get; }
-        List<PackageDependency> UnresolvedDependencies { get; }
 
-        string ToString();
         void AddDependencies(List<object> list);
     }
 }

@@ -10,9 +10,6 @@ using NuGet;
 [assembly: InternalsVisibleTo("DependencyWalkerTests")]
 namespace DependencyWalker
 {
-    internal static class SerialisationHelpers
-    {
-    }
 
     public class IPackageConverter : JsonConverter
     {
@@ -34,7 +31,6 @@ namespace DependencyWalker
     }
     public class ShouldSerializeContractResolver : DefaultContractResolver
     {
-        public static readonly ShouldSerializeContractResolver Instance = new ShouldSerializeContractResolver();
 
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {

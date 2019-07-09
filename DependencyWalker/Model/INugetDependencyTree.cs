@@ -6,6 +6,5 @@ namespace DependencyWalker.Model
     {
         List<INugetDependency> Packages { get; }
 
-        void Print();
     }
 }

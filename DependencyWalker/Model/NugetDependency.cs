@@ -30,11 +30,6 @@ namespace DependencyWalker.Model
             UnresolvedDependencies.Add(subPackage);
         }
 
-        public void AddDependency<T>(object subPackage) where T : PackageDependency
-        {
-            UnresolvedDependencies.Add(subPackage as T);
-        }
-
         public override string ToString()
         {
             return Package.ToString();

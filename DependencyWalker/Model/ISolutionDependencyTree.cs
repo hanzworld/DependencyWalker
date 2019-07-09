@@ -9,6 +9,5 @@ namespace DependencyWalker.Model
         string[] Filter { get; set; }
         List<IProjectInSolution> Projects { get; }
 
-        void Print();
     }
 }

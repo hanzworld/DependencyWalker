@@ -94,7 +94,7 @@ namespace DependencyWalker
         private INugetDependencyTree WalkNuget(Project project)
         {
             //create a Nuget dependency tree for that project
-            var tree = new NugetDependencyTree(project.FullPath, new DirectoryInfo(project.DirectoryPath));
+            var tree = new NugetDependencyTree(new DirectoryInfo(project.DirectoryPath));
             //find the first level of packages
             ConcurrentBag<IPackage> collection = new ConcurrentBag<IPackage>();
             {
@@ -120,7 +120,7 @@ namespace DependencyWalker
             //now iterate down the tree
             foreach (var package in tree.Packages)
             {
-                Walk(package, 0);
+                Walk(package);
             }
 
             Log.Debug($"Finished walking packages for {project.GetProjectName()}");
@@ -129,7 +129,7 @@ namespace DependencyWalker
             return tree;
         }
 
-        private void Walk(INugetDependency package, int level)
+        private void Walk(INugetDependency package)
         {
             var dependencies = package.Package.DependencySets.FirstOrDefault()?.Dependencies;
             if (dependencies == null)
@@ -145,7 +145,7 @@ namespace DependencyWalker
                 if (subPackage != null)
                 {
                     var subDependency = new NugetDependency(subPackage);
-                Walk(subDependency, level + 1);
+                Walk(subDependency);
                     results.Add(subDependency);
                 }
                 else
