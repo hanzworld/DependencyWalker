@@ -24,7 +24,6 @@ namespace DependencyWalker
         private readonly ObjectCache dependencyCache = System.Runtime.Caching.MemoryCache.Default;
         private int NumberOfCollisions;
 
-        public int NumberOfUnfoundPackages { get; private set; }
         public int ShortCircuitResolveDependency { get; private set; }
         public int DependencyCacheHit { get; private set; }
         public int PackageCacheHit { get; private set; }
@@ -34,7 +33,6 @@ namespace DependencyWalker
             this.solutionToAnalyse = solutionToAnalyse;
             this.packageRepositories = packageRepositories;
             this.prerelease = prerelease;
-
         }
 
         public List<Project> Load()
@@ -70,7 +68,6 @@ namespace DependencyWalker
                 };
                 collection.Add(newProject);
                 Log.Information($"So far, had {NumberOfCollisions} collisions.");
-                Log.Information($"So far, had {NumberOfUnfoundPackages} unfound packages.");
                 Log.Information($"So far, had {ShortCircuitResolveDependency} times we could short circuit ResolveDependency.");
                 Log.Information($"So far, had {PackageCacheHit} package cache hits.");
                 Log.Information($"So far, had {DependencyCacheHit} dependency cache hits.");
@@ -106,15 +103,16 @@ namespace DependencyWalker
             {
                 Parallel.ForEach(tree.Source.GetPackageReferences(), reference =>
                 {
-                    var package = FindPackage(reference.Id, reference.Version);
-                    if (package == null)
+                    try
                     {
-                        WarnDependencyNotFound(reference);
-                    }
-                    else
-                    {
+                        var package = FindPackage(reference.Id, reference.Version);
                         collection.Add(package);
                     }
+                    catch (UnableToRetrievePackageException e)
+                    {
+                        Log.Error(e.Message);
+                    }
+
                 });
             }
 
@@ -143,36 +141,51 @@ namespace DependencyWalker
                 return;
             }
 
-            ConcurrentBag<object> results = new ConcurrentBag<object>();
-
             Parallel.ForEach(dependencies, dependency =>
             {
-                IPackage subPackage = ResolveDependency(dependency);
-                if (subPackage != null)
+                try
                 {
+                    IPackage subPackage = ResolveDependency(dependency);
                     var subDependency = new NugetDependency(subPackage);
-                Walk(subDependency);
-                    results.Add(subDependency);
+                    Walk(subDependency);
+                    package.FoundDependencies.Add(subDependency);
                 }
-                else
+                catch (UnableToResolvePackageDependencyException e)
                 {
-                    WarnDependencyNotFound(dependency);
-                results.Add(dependency);
+                    Log.Error(e.Message);
+                    package.UnresolvedDependencies.Add(dependency);
                 }
-
+                catch (UnableToRetrievePackageException e)
+                {
+                    Log.Error(e.Message);
+                    package.UnresolvedDependencies.Add(dependency);
+                }
+                catch (ShortCircuitingResolveDependencyException e)
+                {
+                    Log.Error(e.Message);
+                    package.UnresolvedDependencies.Add(dependency);
+                }
             });
-
-            package.AddDependencies(results.ToList());
 
         }
 
-        //interrogating Nuget feeds in parallel can result in the same package being interrogated (from two different projects) at hte same time
-        //this causes an error in Nuget
-        //to prevent this, use a cache (which isn't a terrible idea so we stop thrashing the server!)
+        /// <summary>
+        /// Calls Nugets own FindPackage to retrieve the metadata of a specific version of a package
+        /// including dependency information. Replicates what would occur when called `nuget restore`,
+        /// but with added caching and performance optimisations in front of it.
+        /// </summary>
+        /// <param name="id">The Nuget ID of the package you want to retrieve</param>
+        /// <param name="version">The Nuget Version of the package you want to retrieve</param>
+        /// <returns></returns>
+        /// <exception cref="UnableToRetrievePackageException"></exception>
         private IPackage FindPackage(string id, SemanticVersion version)
         {
+
             var uniqueidentifier = $"{id}-{version}";
 
+            //interrogating Nuget feeds in parallel can result in the same package being interrogated (from two different projects) at hte same time
+            //this causes an error in Nuget
+            //to prevent this, use a cache (which isn't a terrible idea so we stop thrashing the server!)
             //check the cache first
             var package = packageCache[uniqueidentifier] as IPackage;
 
@@ -208,11 +221,21 @@ namespace DependencyWalker
 
                 //fallback to other nuget locations and see if it's there instead
             }
+
             //if we got here then we didn't find the package
-            NumberOfUnfoundPackages++;
-            return null;
+            throw new UnableToRetrievePackageException(id, version);
         }
 
+        /// <summary>
+        /// Calls Nuget's own ResolveDependency to find the exact package which will satisfy the dependency
+        /// specifications. Replicates what would occur when called `nuget restore`, but with added
+        /// caching and performance optimisations in front of it.
+        /// </summary>
+        /// <param name="dependency">A definition of a dependency, including a version specification</param>
+        /// <returns></returns>
+        /// <exception cref="ShortCircuitingResolveDependencyException"></exception>
+        /// <exception cref="UnableToResolvePackageDependencyException"></exception>
+        /// <exception cref="UnableToRetrievePackageException"></exception>
         private IPackage ResolveDependency(PackageDependency dependency)
         {
             try
@@ -226,11 +249,9 @@ namespace DependencyWalker
                     return FindPackage(dependency.Id, dependency.VersionSpec.MinVersion);
                 }
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
-                Log.Error(e,
-                    $"Couldn't resolve dependency. Dependency is {(dependency == null ? "null" : "not null")}. Version is {(dependency.VersionSpec == null ? "null" : "not null")}. {dependency}");
-                throw;
+                throw new ShortCircuitingResolveDependencyException(dependency);
             }
 
             var uniqueidentifier = dependency.ToString();
@@ -262,18 +283,8 @@ namespace DependencyWalker
                 //fallback to other nuget locations and see if it's there instead
             }
             //if we got here then we didn't find the package
-            return null;
+            throw new UnableToResolvePackageDependencyException(dependency);
 
-        }
-
-        private static void WarnDependencyNotFound(PackageDependency dependency)
-        {
-            Log.Warning($"** Dependency {dependency} isn't on this server - did you get it elsewhere?");
-        }
-
-        private static void WarnDependencyNotFound(PackageReference reference)
-        {
-            Log.Warning($"** Dependency {reference} isn't on this server - did you get it elsewhere?");
         }
     }
 }

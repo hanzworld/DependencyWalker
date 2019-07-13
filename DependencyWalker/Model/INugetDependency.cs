@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using NuGet;
 
@@ -6,10 +7,10 @@ namespace DependencyWalker.Model
 {
     public interface INugetDependency
     {
-        List<INugetDependency> FoundDependencies { get; }
+        ConcurrentBag<INugetDependency> FoundDependencies { get; }
+        ConcurrentBag<PackageDependency> UnresolvedDependencies { get; }
+
         [JsonConverter(typeof(IPackageConverter))]
         IPackage Package { get; }
-
-        void AddDependencies(List<object> list);
     }
 }

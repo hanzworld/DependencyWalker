@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -36,7 +37,7 @@ namespace DependencyWalker
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);
 
-            if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
+            if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(ConcurrentBag<>))
             {
                 property.ShouldSerialize =
                     instance =>

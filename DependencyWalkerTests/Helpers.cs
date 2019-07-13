@@ -1,4 +1,5 @@
-﻿using DependencyWalker.Model;
+﻿using System.Collections.Concurrent;
+using DependencyWalker.Model;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,17 +43,21 @@ namespace DependencyWalkerTests
         }
 
 
-        private static IEnumerable<INugetDependency> CreatePackages(IReadOnlyList<string[]> packages, int depth)
+        private static ConcurrentBag<INugetDependency> CreatePackages(IReadOnlyList<string[]> packages, int depth)
         {
-            if (depth >= packages.Count) yield break;
+            var toReturn = new ConcurrentBag<INugetDependency>();
+
+            if (depth >= packages.Count) return toReturn;
 
             foreach (var package in packages[depth])
             {
                 Mock<INugetDependency> info = new Mock<INugetDependency>();
                 info.Setup(i => i.Package.Id).Returns(package);
-                info.Setup(i => i.FoundDependencies).Returns(CreatePackages(packages, depth + 1).ToList());
-                yield return info.Object;
+                info.Setup(i => i.FoundDependencies).Returns(CreatePackages(packages, depth + 1));
+                toReturn.Add(info.Object);
             }
+
+            return toReturn;
         }
     }
 }

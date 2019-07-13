@@ -3,12 +3,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using DependencyWalker.Model;
 
-[assembly:InternalsVisibleTo("DependencyWalkerTests")]
+[assembly: InternalsVisibleTo("DependencyWalkerTests")]
 namespace DependencyWalker
 {
-     internal static class NugetDependencyExtensions
+    internal static class NugetDependencyExtensions
     {
-         private static bool IsOfInterest(this INugetDependency package, ISolutionDependencyTree tree)
+        private static bool IsOfInterest(this INugetDependency package, ISolutionDependencyTree tree)
         {
 
             if (tree.Filter.Contains(package.Package.Id))
@@ -42,15 +42,15 @@ namespace DependencyWalker
             IEnumerable<NugetRelationship> GetChildren(INugetDependency package)
             {
                 var toReturn = new List<NugetRelationship>();
-                var subpackages = package.FoundDependencies.GetPackagesThatMatchFilter(tree).ToList();
+                var subpackages = package.FoundDependencies.ToList().GetPackagesThatMatchFilter(tree).ToList();
                 foreach (var p in subpackages)
                 {
-                    toReturn.Add(new NugetRelationship {Source = package, Target = p});
+                    toReturn.Add(new NugetRelationship { Source = package, Target = p });
                 }
 
                 foreach (var dependency in subpackages)
                 {
-                     GetChildren(dependency);
+                    GetChildren(dependency);
                 }
                 return toReturn;
             }
@@ -59,7 +59,7 @@ namespace DependencyWalker
             //get all the packages of this tree
             foreach (var proj in tree.Projects)
             {
-                var DependenciesToChase =  proj.NugetDependencyTree.Packages.GetPackagesThatMatchFilter(tree);
+                var DependenciesToChase = proj.NugetDependencyTree.Packages.GetPackagesThatMatchFilter(tree);
                 x.AddRange(DependenciesToChase.SelectMany(GetChildren));
             }
 
@@ -86,7 +86,7 @@ namespace DependencyWalker
         {
             return tree.Projects.SelectMany(p =>
                 p.ProjectDependencyTree.References.Select(proj => new ProjectProjectRelationship
-                    {Source = p, Target = proj})).ToList();
+                { Source = p, Target = proj })).ToList();
 
         }
 
