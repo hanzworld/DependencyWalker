@@ -27,7 +27,7 @@ namespace DependencyWalker
                 ),
                 new XElement(dgmlns + "Links",
                     pn.Select(r => CreateLink(r.Source.Name, r.Target.Package.Id, "Package Reference")),
-                    nn.Select(r => CreateLink(r.Source.Package.Id, r.Target.Package.Id, "Nuget Subdependency")),
+                    nn.Select(r => CreateLink(r.Source.Package.Id, r.Target.Package.Id, "Transitive Dependency")),
                     pp.Select(r => CreateLink(r.Source.Name, r.Target.Name, "Project Reference"))
                 ),
                 // No need to declare Categories, auto generated
