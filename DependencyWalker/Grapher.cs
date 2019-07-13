@@ -22,7 +22,7 @@ namespace DependencyWalker
                 new XAttribute("GraphDirection", "LeftToRight"),
                 new XElement(dgmlns + "Nodes",
                     tree.Projects.Select(p => CreateNode(p.Name, "Project")),
-                    nn.Select(r => CreateNode(r.Source.Package.Id, "Package")),
+                    pn.Select(r => CreateNode(r.Target.Package.Id, "Package")),
                     nn.Select(r => CreateNode(r.Target.Package.Id, "Package"))
                 ),
                 new XElement(dgmlns + "Links",
