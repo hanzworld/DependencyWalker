@@ -22,6 +22,7 @@ namespace DependencyWalker
         private readonly bool prerelease;
         private readonly ObjectCache packageCache = System.Runtime.Caching.MemoryCache.Default;
         private readonly ObjectCache dependencyCache = System.Runtime.Caching.MemoryCache.Default;
+        private readonly HashSet<string> unavailablePackageCache = new HashSet<string>();
         private int NumberOfCollisions;
 
         public int ShortCircuitResolveDependency { get; private set; }
@@ -187,17 +188,26 @@ namespace DependencyWalker
             //this causes an error in Nuget
             //to prevent this, use a cache (which isn't a terrible idea so we stop thrashing the server!)
             //check the cache first
-            var package = packageCache[uniqueidentifier] as IPackage;
 
-            //otherwise ask one of our many Nuget servers
-            if (package != null)
+            if (packageCache.Contains(uniqueidentifier))
             {
                 PackageCacheHit++;
+                var package = packageCache[uniqueidentifier] as IPackage;
                 return package;
+
             }
+
+            if (unavailablePackageCache.Contains(uniqueidentifier))
+            {
+                //we've tried to retrieve this before and failed, don't bother trying again
+                    throw new UnableToRetrievePackageException(id, version);
+            }
+
+            //otherwise ask one of our many Nuget servers
 
             foreach (var repository in packageRepositories)
             {
+                IPackage package;
                 try
                 {
                     package = repository.FindPackage(id, version, prerelease, true);
@@ -209,7 +219,7 @@ namespace DependencyWalker
                     return FindPackage(id, version);
                 }
 
-                //we found it, don't need to keep looking
+                //if we found it, don't need to keep looking through other servers
                 if (package == null)
                 {
                     continue;
@@ -223,6 +233,7 @@ namespace DependencyWalker
             }
 
             //if we got here then we didn't find the package
+            unavailablePackageCache.Add(uniqueidentifier);
             throw new UnableToRetrievePackageException(id, version);
         }
 
