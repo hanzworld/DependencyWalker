@@ -69,6 +69,7 @@ namespace DependencyWalkerTests
             Assert.Contains(pn, n => n.Source.Package.Id == fixture.Data[1].Dependencies[0][0] && n.Target.Package.Id ==  fixture.Data[1].Dependencies[1][0]);
             Assert.Contains(pn, n => n.Source.Package.Id == fixture.Data[2].Dependencies[0][0] && n.Target.Package.Id == fixture.Data[2].Dependencies[1][0]);
             Assert.Contains(pn, n => n.Source.Package.Id == fixture.Data[2].Dependencies[0][1] && n.Target.Package.Id == fixture.Data[2].Dependencies[1][0]);
+            Assert.DoesNotContain(pn, n => n.Source.Package.Id == fixture.Data[2].Dependencies[1][0] && n.Target.Package.Id == fixture.Data[2].Dependencies[2][0]);
 
         }
     }
