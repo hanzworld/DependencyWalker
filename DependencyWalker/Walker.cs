@@ -25,6 +25,9 @@ namespace DependencyWalker
         private int NumberOfCollisions;
 
         public int NumberOfUnfoundPackages { get; private set; }
+        public int ShortCircuitResolveDependency { get; private set; }
+        public int DependencyCacheHit { get; private set; }
+        public int PackageCacheHit { get; private set; }
 
         public Walker(string solutionToAnalyse, List<IPackageRepository> packageRepositories, bool prerelease)
         {
@@ -68,6 +71,9 @@ namespace DependencyWalker
                 collection.Add(newProject);
                 Log.Information($"So far, had {NumberOfCollisions} collisions.");
                 Log.Information($"So far, had {NumberOfUnfoundPackages} unfound packages.");
+                Log.Information($"So far, had {ShortCircuitResolveDependency} times we could short circuit ResolveDependency.");
+                Log.Information($"So far, had {PackageCacheHit} package cache hits.");
+                Log.Information($"So far, had {DependencyCacheHit} dependency cache hits.");
             }
             );
 
@@ -173,6 +179,7 @@ namespace DependencyWalker
             //otherwise ask one of our many Nuget servers
             if (package != null)
             {
+                PackageCacheHit++;
                 return package;
             }
 
@@ -215,7 +222,8 @@ namespace DependencyWalker
                 if (dependency.VersionSpec != null && (dependency.VersionSpec.MaxVersion == null ||
                     dependency.VersionSpec.MaxVersion == dependency.VersionSpec.MinVersion))
                 {
-                    return FindPackage(dependency.Id, dependency.VersionSpec.MaxVersion);
+                    ShortCircuitResolveDependency++;
+                    return FindPackage(dependency.Id, dependency.VersionSpec.MinVersion);
                 }
             }
             catch (NullReferenceException e)
@@ -233,6 +241,7 @@ namespace DependencyWalker
             //otherwise ask one of our many Nuget servers
             if (package != null)
             {
+                DependencyCacheHit++;
                 return package;
             }
 
