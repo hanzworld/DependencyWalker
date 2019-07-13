@@ -9,7 +9,7 @@ namespace DependencyWalker
     {
         private static readonly XNamespace dgmlns = "http://schemas.microsoft.com/vs/2009/dgml";
 
-        internal static void GenerateDGML(ISolutionDependencyTree tree)
+        internal static XDocument GenerateDGML(ISolutionDependencyTree tree)
         {
 
             var pn = tree.GetProjectToNugetRelationships().ToList();
@@ -38,6 +38,8 @@ namespace DependencyWalker
 
             var doc = new XDocument(graph);
             doc.Save("mydgml.dgml");
+
+            return doc;
 
         }
 
