@@ -60,7 +60,7 @@ namespace DependencyWalkerTests
             JSchema schema = JSchema.Parse(File.ReadAllText("tree-json-schema.json"));
             JObject tree = JObject.Parse(fixture.SerializedTree);
 
-            tree.IsValid(schema);
+            Assert.True(tree.IsValid(schema));
         }
 
 
