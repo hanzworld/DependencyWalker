@@ -14,10 +14,6 @@ namespace DependencyWalker
 
     public class Program
     {
-        
-        private static List<IPackageRepository> PackageRepositories;
-        
-        private const bool PreRelease = false;
         private static ServiceProvider ServiceProvider;
 
         public static int Main(string[] args)
@@ -44,9 +40,11 @@ namespace DependencyWalker
         private void OnExecute()
 #pragma warning restore IDE0051 // See message above
         {
+            const bool PreRelease = false;
+
             //some packages are on our private nuget server and some are on the public nuget server
             //in order to be able to traverse down a full dependency graph, we need to be able to talk to both
-            PackageRepositories = new List<IPackageRepository>();
+            List<IPackageRepository> PackageRepositories = new List<IPackageRepository>();
             foreach (var uri in PackageSources)
             {
                 PackageRepositories.Add(PackageRepositoryFactory.Default.CreateRepository(uri));
