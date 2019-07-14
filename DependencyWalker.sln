@@ -1,11 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyWalker", "DependencyWalker\DependencyWalker.csproj", "{59CE290A-E406-4784-BE88-AA299A66BD8E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyWalkerTests", "DependencyWalkerTests\DependencyWalkerTests.csproj", "{B930DA43-6155-46B4-BD3E-51C21E578E6E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CF5BCA0F-03BB-4655-AADA-4D96D7FE0CE3}"
+	ProjectSection(SolutionItems) = preProject
+		DependencyWalker.sln.licenseheader = DependencyWalker.sln.licenseheader
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
