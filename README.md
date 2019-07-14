@@ -7,7 +7,8 @@ Broadly speaking, these are the parameters you are most likely interested in:
 
 Parameter | Description | Example Usage
 ----------|-------------|------
--s | A path to a Visual Studio solution file to analyse | `-s "C:\dev\someproject\MySolution.sln"`
+-s | A path to a Visual Studio solution file to analyse | `DependencyWalker.exe -s "C:\dev\someproject\MySolution.sln"`
+-n | Uri to Nuget repository feed. Can be specified multiple times, supporting fallback Nuget feeds.| `DependencyWalker.exe -n "https://customnugetfeed.my/api/v2" -n "https://secondarynugetfeed.my/api/v2"`
 
 Modify the class properties in Program.cs and then execute. You need the following properties set:
 - PackageSources

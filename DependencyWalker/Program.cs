@@ -14,7 +14,7 @@ namespace DependencyWalker
 
     public class Program
     {
-        static readonly string[] PackageSources = {"https://www.nuget.org/api/v2/"};
+        
         private static List<IPackageRepository> PackageRepositories;
         private static readonly string[] DependenciesOfInterest = { "Newtonsoft.Json" };
         private const bool PreRelease = false;
@@ -27,6 +27,11 @@ namespace DependencyWalker
         [FileExists]
         [Option(Description = "Required. Path to a .sln file to analyse", ShortName = "s", LongName = "solution")]
         public string SolutionToAnalyse { get; }
+
+        [Option(Description = "Nuget feeds to use. Defaults to public Nuget feed. Can be specified multiple times.", ShortName = "n", LongName = "nuget-url")]
+        [Url]
+        [NugetApiEndPoint]
+        public string[] PackageSources { get; } = { "https://www.nuget.org/api/v2/" };
 
         [SuppressMessage("ReSharper", "UnusedMember.Local",
             Justification = @"This method is invoked through reflection by CommandLineApplication.Execute. 
@@ -87,6 +92,29 @@ namespace DependencyWalker
                     Log.Debug("Now generating graph");
                     Grapher.GenerateDGML(tree);
                 });
+        }
+
+        class NugetApiEndPointAttribute : ValidationAttribute
+        {
+            public NugetApiEndPointAttribute()
+                : base("The URL {0} must be valid Nuget v2 endpoint")
+            {
+            }
+
+            protected override ValidationResult IsValid(object value, ValidationContext context)
+            {
+                var repository = PackageRepositoryFactory.Default.CreateRepository(value as string);
+                try
+                {
+                    var searchResults = repository.Search("Newtonsoft", false);
+                }
+                catch (System.Net.WebException)
+                {
+
+                    return new ValidationResult(FormatErrorMessage(context.DisplayName));
+                }
+                return ValidationResult.Success;
+            }
         }
     }
 }
