@@ -1,10 +1,21 @@
 # How to use
-Currently the application does not support command line arguments (coming in v2).
+
+Run DependencyWalker.exe with -? or --help flags for documentation on parameters.
+
+## Main parameters
+Broadly speaking, these are the parameters you are most likely interested in:
+
+Parameter | Description | Example Usage
+----------|-------------|------
+-s | A path to a Visual Studio solution file to analyse | `-s "C:\dev\someproject\MySolution.sln"`
 
 Modify the class properties in Program.cs and then execute. You need the following properties set:
 - PackageSources
 - Dependencies of Interest (if you want to filter the graph to a specific sub dependency only, otherwise leave empty)
 - SolutionToAnalyse
+
+
+
 
 
 #Attribution

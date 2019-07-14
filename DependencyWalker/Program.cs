@@ -17,12 +17,16 @@ namespace DependencyWalker
         static readonly string[] PackageSources = {"https://www.nuget.org/api/v2/"};
         private static List<IPackageRepository> PackageRepositories;
         private static readonly string[] DependenciesOfInterest = { "Newtonsoft.Json" };
-        private const string SolutionToAnalyse = @"C:\dev\project\Something.sln";
         private const bool PreRelease = false;
         private static ServiceProvider ServiceProvider;
 
         public static int Main(string[] args)
             => CommandLineApplication.Execute<Program>(args);
+
+        [Required]
+        [FileExists]
+        [Option(Description = "Required. Path to a .sln file to analyse", ShortName = "s", LongName = "solution")]
+        public string SolutionToAnalyse { get; }
 
         [SuppressMessage("ReSharper", "UnusedMember.Local",
             Justification = @"This method is invoked through reflection by CommandLineApplication.Execute. 
