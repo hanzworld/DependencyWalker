@@ -9,17 +9,11 @@ Parameter | Description | Example Usage
 ----------|-------------|------
 -s | A path to a Visual Studio solution file to analyse | `DependencyWalker.exe -s "C:\dev\someproject\MySolution.sln"`
 -n | Uri to Nuget repository feed. Can be specified multiple times, supporting fallback Nuget feeds.| `DependencyWalker.exe -n "https://customnugetfeed.my/api/v2" -n "https://secondarynugetfeed.my/api/v2"`
-
-Modify the class properties in Program.cs and then execute. You need the following properties set:
-- PackageSources
-- Dependencies of Interest (if you want to filter the graph to a specific sub dependency only, otherwise leave empty)
-- SolutionToAnalyse
+-f | Optional. Package Id to limit dependency tree to. Program will identify any place in the dependency tree this package(s) occur. Can be specified multiple times. | `DependencyWalker.exe -f Newtonsoft.Json -f RestSharp`
 
 
+# Attribution
 
-
-
-#Attribution
 This project was inspired by many blog posts and benefitted from the work of others so credit where credit is due:
 
 https://stackoverflow.com/questions/6653715/view-nuget-package-dependency-hierarchy

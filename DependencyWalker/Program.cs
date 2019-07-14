@@ -16,7 +16,7 @@ namespace DependencyWalker
     {
         
         private static List<IPackageRepository> PackageRepositories;
-        private static readonly string[] DependenciesOfInterest = { "Newtonsoft.Json" };
+        
         private const bool PreRelease = false;
         private static ServiceProvider ServiceProvider;
 
@@ -32,6 +32,10 @@ namespace DependencyWalker
         [Url]
         [NugetApiEndPoint]
         public string[] PackageSources { get; } = { "https://www.nuget.org/api/v2/" };
+
+        [Option(Description = "Id of a Nuget package you specifically want to find all relationships to. Can be specified multiple times.", ShortName = "f", LongName = "filter")]
+        public string[] DependenciesOfInterest { get; }
+
 
         [SuppressMessage("ReSharper", "UnusedMember.Local",
             Justification = @"This method is invoked through reflection by CommandLineApplication.Execute. 
