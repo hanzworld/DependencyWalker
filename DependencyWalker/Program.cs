@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
+using McMaster.Extensions.CommandLineUtils;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DependencyWalker
 {
@@ -17,7 +20,16 @@ namespace DependencyWalker
         private const string SolutionToAnalyse = @"C:\dev\project\Something.sln";
         private const bool PreRelease = false;
         private static ServiceProvider ServiceProvider;
-        public static void Main()
+
+        public static int Main(string[] args)
+            => CommandLineApplication.Execute<Program>(args);
+
+        [SuppressMessage("ReSharper", "UnusedMember.Local",
+            Justification = @"This method is invoked through reflection by CommandLineApplication.Execute. 
+            Resharper is wrong, the application will break if you delete this!")]
+#pragma warning disable IDE0051 // See message above
+        private void OnExecute()
+#pragma warning restore IDE0051 // See message above
         {
             //some packages are on our private nuget server and some are on the public nuget server
             //in order to be able to traverse down a full dependency graph, we need to be able to talk to both
@@ -54,7 +66,7 @@ namespace DependencyWalker
             Console.ReadLine();
         }
 
-        private static void Run()
+        private void Run()
         {
             var walker = ServiceProvider.GetService<IWalker>();
 
