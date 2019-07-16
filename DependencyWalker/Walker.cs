@@ -23,11 +23,11 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
 using DependencyWalker.Model;
+using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
-using net.r_eg.MvsSln;
-using net.r_eg.MvsSln.Extensions;
 using NuGet;
 using Serilog;
+using ProjectInSolution = DependencyWalker.Model.ProjectInSolution;
 
 namespace DependencyWalker
 {
@@ -59,12 +59,12 @@ namespace DependencyWalker
 
             List<Project> projects = new List<Project>();
 
-            using (var sln = new Sln(solutionToAnalyse, SlnItems.Projects))
+            var sln = SolutionFile.Parse(solutionToAnalyse);
             {
 
-                foreach (var p in sln.Result.ProjectItems)
+                foreach (var p in sln.ProjectsInOrder.Where(p => p.ProjectType == SolutionProjectType.KnownToBeMSBuildFormat))
                 {
-                    var project = projectCollection.LoadProject(p.fullPath);
+                    var project = projectCollection.LoadProject(p.AbsolutePath);
                     projects.Add(project);
                 }
             }
