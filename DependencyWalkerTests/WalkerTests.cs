@@ -35,7 +35,7 @@ namespace DependencyWalkerTests
             {
                 PackageRepositories.Add(PackageRepositoryFactory.Default.CreateRepository(uri));
             }
-            WalkerUnderTest = new Walker(@"..\..\..\TestSolution\TestSolution.sln", PackageRepositories, false);  
+            WalkerUnderTest = new Walker(System.IO.Path.GetFullPath(@"..\..\..\TestSolution\TestSolution.sln"), PackageRepositories, false);  
 
         }
 
