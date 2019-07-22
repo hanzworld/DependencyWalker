@@ -24,8 +24,8 @@ namespace DependencyWalker.Model
     public class NugetDependency : INugetDependency
     {
         public IPackage Package { get; }
-        public ConcurrentBag<INugetDependency> FoundDependencies { get; }
-        public ConcurrentBag<PackageDependency> UnresolvedDependencies { get; }
+        public ConcurrentBag<INugetDependency> FoundDependencies { get; set; }
+        public ConcurrentBag<PackageDependency> UnresolvedDependencies { get; set; }
 
         [JsonConstructor]
         public NugetDependency(IPackage package)

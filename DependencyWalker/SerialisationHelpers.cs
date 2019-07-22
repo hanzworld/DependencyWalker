@@ -21,7 +21,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using DependencyWalker.Model;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using NuGet;
 
@@ -38,7 +41,19 @@ namespace DependencyWalker
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            if (reader.TokenType == JsonToken.Null)
+            {
+                return null;
+            }
+            if (reader.TokenType == JsonToken.String)
+            {
+                string deserialisedString = (string)serializer.Deserialize(reader, typeof(string));
+                var parts = deserialisedString.Split(' ');
+
+                return new DataServicePackage() { Id = parts[0], Version = parts[1] };
+            }
+
+            return serializer.Deserialize(reader, objectType);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -47,6 +62,7 @@ namespace DependencyWalker
             writer.WriteValue(package.ToString());
         }
     }
+
     public class ShouldSerializeContractResolver : DefaultContractResolver
     {
 
@@ -58,7 +74,7 @@ namespace DependencyWalker
             {
                 property.ShouldSerialize =
                     instance =>
-                    {                        
+                    {
                         var list = property.ValueProvider.GetValue(instance) as IEnumerable;
 
                         //check to see if there is at least one item in the Enumeration
@@ -67,6 +83,161 @@ namespace DependencyWalker
             }
 
             return property;
+        }
+    }
+
+
+    public class NugetDependencyConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(INugetDependency);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return serializer.Deserialize(reader, typeof(NugetDependency));
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
+        }
+    }
+
+    public class NugetDependencyTreeConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(INugetDependencyTree);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return serializer.Deserialize(reader, typeof(NugetDependencyTree));
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
+        }
+    }
+
+    public class ProjectDependencyConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(IProjectDependency);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return serializer.Deserialize(reader, typeof(ProjectDependency));
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
+        }
+    }
+
+
+    public class ProjectDependencyTreeConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(IProjectDependencyTree);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return serializer.Deserialize(reader, typeof(ProjectDependencyTree));
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
+        }
+    }
+
+
+
+    public class ProjectInSolutionConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(IProjectInSolution);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return serializer.Deserialize(reader, typeof(ProjectInSolution));
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
+        }
+    }
+
+
+    public class SolutionDependencyTreeConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(ISolutionDependencyTree);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return serializer.Deserialize(reader, typeof(SolutionDependencyTree));
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
+        }
+    }
+
+    public class PackageDependencyConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(PackageDependency);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null)
+            {
+                return null;
+            }
+            if (reader.TokenType == JsonToken.String)
+            {
+                return serializer.Deserialize(reader, objectType);
+
+            }
+
+            JObject obj = JObject.Load(reader);
+            if (obj["Id"] != null)
+            {
+                var version = new VersionSpec()
+                    {IsMaxInclusive = obj["VersionSpec"]["IsMaxInclusive"].ToObject<bool>()};
+                    //, IsMinInclusive = true, MaxVersion = "blah", MinVersion = "blah" };
+                return new PackageDependency(obj["Id"].ToString(), version, obj["Include"].ToString(), obj["Exclude"].ToString());
+            }
+
+            if (obj["Code"] != null)
+            {
+                return obj["Code"].ToString();
+            }
+
+            return serializer.Deserialize(reader, objectType);
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
         }
     }
 

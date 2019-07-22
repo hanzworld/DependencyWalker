@@ -24,7 +24,7 @@ namespace DependencyWalker.Model
             Name = fullPath;
         }
 
-        public string Name { get; }
+        public string Name { get; set; }
         public INugetDependencyTree NugetDependencyTree { get; set; }
         public IProjectDependencyTree ProjectDependencyTree { get; set; }
 

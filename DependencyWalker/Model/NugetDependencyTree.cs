@@ -31,7 +31,10 @@ namespace DependencyWalker.Model
         [JsonIgnore]
         public PackageReferenceFile Source { get; }
 
-
+        public NugetDependencyTree()
+        {
+            Packages = new List<INugetDependency>();    
+        }
         public NugetDependencyTree(FileSystemInfo directory)
         {
             Packages = new List<INugetDependency>();
