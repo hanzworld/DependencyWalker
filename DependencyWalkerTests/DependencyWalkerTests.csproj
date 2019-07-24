@@ -26,12 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="MvsSln">
-      <HintPath>..\..\..\Users\hannah.gray\.nuget\packages\mvssln\2.2.0\lib\net40\MvsSln.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
 

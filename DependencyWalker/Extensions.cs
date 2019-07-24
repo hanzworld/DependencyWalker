@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DependencyWalker.Model;
+using Microsoft.Build.Evaluation;
 
 [assembly: InternalsVisibleTo("DependencyWalkerTests")]
 namespace DependencyWalker
@@ -124,6 +125,14 @@ namespace DependencyWalker
         {
             public IProjectInSolution Source { get; set; }
             public IProjectDependency Target { get; set; }
+        }
+    }
+
+    internal static class ProjectExtensions
+    {
+        public static string GetProjectName(this Project eProject)
+        {
+            return eProject?.GetPropertyValue("ProjectName");
         }
     }
 }
