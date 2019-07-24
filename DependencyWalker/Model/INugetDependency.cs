@@ -16,7 +16,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 using System.Collections.Concurrent;
-using System.Collections.Generic;
+using DependencyWalker.Serialisation.JsonConverters;
 using Newtonsoft.Json;
 using NuGet;
 

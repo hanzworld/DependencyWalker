@@ -16,30 +16,30 @@
  * <https://www.gnu.org/licenses/>.
  */
 using System;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Newtonsoft.Json.Serialization;
-using Serilog;
-using Serilog.Events;
+using DependencyWalker.Model;
+using Newtonsoft.Json;
 
 [assembly: InternalsVisibleTo("DependencyWalkerTests")]
-namespace DependencyWalker
+
+namespace DependencyWalker.Serialisation.JsonConverters
 {
-
-    public class SerilogTraceWriter : ITraceWriter
+    public class ProjectInSolutionConverter : JsonConverter
     {
-        public TraceLevel LevelFilter
+        public override bool CanConvert(Type objectType)
         {
-            // trace all messages. nlog can handle filtering
-            get { return TraceLevel.Verbose; }
+            return objectType == typeof(IProjectInSolution);
         }
 
-        public void Trace(TraceLevel level, string message, Exception ex)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            // log Json.NET message to NLog
-            Log.Write(LogEventLevel.Verbose, ex, message);
+            return serializer.Deserialize(reader, typeof(ProjectInSolution));
         }
 
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
+        }
     }
 
 }

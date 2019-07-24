@@ -18,6 +18,7 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using DependencyWalker.Model;
+using DependencyWalker.Serialisation.ContractorResolvers;
 using Newtonsoft.Json;
 using Serilog;
 

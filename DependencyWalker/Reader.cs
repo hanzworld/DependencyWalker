@@ -18,6 +18,7 @@
 
 using System.IO;
 using DependencyWalker.Model;
+using DependencyWalker.Serialisation.JsonConverters;
 using Newtonsoft.Json;
 
 namespace DependencyWalker
