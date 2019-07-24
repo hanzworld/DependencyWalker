@@ -47,17 +47,25 @@ namespace DependencyWalker.Serialisation.JsonConverters
             JObject obj = JObject.Load(reader);
             if (obj["Id"] != null)
             {
+                var minVersion = obj["VersionSpec"]["MinVersion"].Value<string>();
+                var maxVersion = obj["VersionSpec"]["MaxVersion"].Value<string>();
+                
                 var version = new VersionSpec()
-                { IsMaxInclusive = obj["VersionSpec"]["IsMaxInclusive"].ToObject<bool>() };
-                //, IsMinInclusive = true, MaxVersion = "blah", MinVersion = "blah" };
-                return new PackageDependency(obj["Id"].ToString(), version, obj["Include"].ToString(), obj["Exclude"].ToString());
-            }
+                {
+                    IsMaxInclusive = obj["VersionSpec"]["IsMaxInclusive"].ToObject<bool>(),
+                    MaxVersion = String.IsNullOrEmpty(maxVersion) ? null : new SemanticVersion(maxVersion),
+                    IsMinInclusive = obj["VersionSpec"]["IsMinInclusive"].ToObject<bool>(),
+                    MinVersion = String.IsNullOrEmpty(minVersion)  ? null : new SemanticVersion(minVersion)
 
-            if (obj["Code"] != null)
-            {
-                return obj["Code"].ToString();
-            }
+                };
 
+                return new PackageDependency(
+                    obj["Id"].ToString(),
+                    version,
+                    obj["Include"].Value<string>(),
+                    obj["Exclude"].Value<string>());
+            }
+            
             return serializer.Deserialize(reader, objectType);
         }
 
