@@ -33,3 +33,4 @@ packages/
 /DependencyWalker/log*.txt
 /DependencyWalker/output.txt
 /DependencyWalker/mydgml.dgml
+*.dgml
