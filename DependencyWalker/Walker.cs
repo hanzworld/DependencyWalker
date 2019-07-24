@@ -78,17 +78,17 @@ namespace DependencyWalker
             Parallel.ForEach(Load(), project =>
             //foreach (var project in Load())
             {
-                Log.Debug($"Starting {project.ProjectFileLocation}");
+                Log.Information($"Starting {project.ProjectFileLocation}");
                 var newProject = new ProjectInSolution(project.GetProjectName())
                 {
                     NugetDependencyTree = WalkNuget(project),
                     ProjectDependencyTree = WalkProjects(project)
                 };
                 collection.Add(newProject);
-                Log.Information($"So far, had {NumberOfCollisions} collisions.");
-                Log.Information($"So far, had {ShortCircuitResolveDependency} times we could short circuit ResolveDependency.");
-                Log.Information($"So far, had {PackageCacheHit} package cache hits.");
-                Log.Information($"So far, had {DependencyCacheHit} dependency cache hits.");
+                Log.Debug($"So far, had {NumberOfCollisions} collisions.");
+                Log.Debug($"So far, had {ShortCircuitResolveDependency} times we could short circuit ResolveDependency.");
+                Log.Debug($"So far, had {PackageCacheHit} package cache hits.");
+                Log.Debug($"So far, had {DependencyCacheHit} dependency cache hits.");
             }
             );
 
@@ -145,7 +145,7 @@ namespace DependencyWalker
                 Walk(package);
             }
 
-            Log.Debug($"Finished walking packages for {project.GetProjectName()}");
+            Log.Information($"Finished walking packages for {project.GetProjectName()}");
             Log.Debug($"Cache has {packageCache.GetCount()} items");
 
             return tree;
