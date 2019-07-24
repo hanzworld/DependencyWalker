@@ -67,7 +67,7 @@ namespace DependencyWalker
 
                 foreach (var dependency in subpackages)
                 {
-                    GetChildren(dependency);
+                    toReturn.AddRange(GetChildren(dependency));
                 }
                 return toReturn;
             }

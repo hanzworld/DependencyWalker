@@ -31,8 +31,8 @@ namespace DependencyWalkerTests
             Data = new []
             {
                 new TestData("Project1", new [] {"Newtonsoft.Json"}),
-                new TestData("Project2", new [] {"RestSharp"}, new [] { "Subdependency"}),
-                new TestData("Project3", new[] {"RestSharp", "Newtonsoft.Json"}, new [] {"Subdependency"}, new [] { "Subsubdependency"})
+                new TestData("Project2", new [] {"RestSharp"}, new [] { "Subdependency1"}),
+                new TestData("Project3", new[] {"RestSharp", "Newtonsoft.Json"}, new [] {"Subdependency2"}, new [] { "Subdependency1", "Subdependency3"})
         };
 
             Tree = CreateMeAMockDependencyTree(Data).Object;
@@ -78,15 +78,14 @@ namespace DependencyWalkerTests
         [Fact]
         public void FlattensAndFiltersNugetToNugetRelationships()
         {
-            fixture.Tree.Filter = new[] { "Subdependency" };
+            fixture.Tree.Filter = new[] { "Subdependency1" };
             var pn = fixture.Tree.GetNugetToNugetRelationships().ToList();
 
-            Assert.Equal(2, pn.Count);
+            Assert.Equal(4, pn.Count);
 
             Assert.Contains(pn, n => n.Source.Package.Id == fixture.Data[1].Dependencies[0][0] && n.Target.Package.Id ==  fixture.Data[1].Dependencies[1][0]);
-            Assert.Contains(pn, n => n.Source.Package.Id == fixture.Data[2].Dependencies[0][0] && n.Target.Package.Id == fixture.Data[2].Dependencies[1][0]);
-            Assert.Contains(pn, n => n.Source.Package.Id == fixture.Data[2].Dependencies[0][1] && n.Target.Package.Id == fixture.Data[2].Dependencies[1][0]);
-            Assert.DoesNotContain(pn, n => n.Source.Package.Id == fixture.Data[2].Dependencies[1][0] && n.Target.Package.Id == fixture.Data[2].Dependencies[2][0]);
+            Assert.Contains(pn, n => n.Source.Package.Id == fixture.Data[2].Dependencies[1][0] && n.Target.Package.Id == fixture.Data[2].Dependencies[2][0]);
+            Assert.DoesNotContain(pn, n => n.Source.Package.Id == fixture.Data[2].Dependencies[1][0] && n.Target.Package.Id == fixture.Data[2].Dependencies[2][1]);
 
         }
     }
