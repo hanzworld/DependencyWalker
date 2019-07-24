@@ -40,7 +40,11 @@ namespace DependencyWalker
             return JsonConvert.SerializeObject(
                 tree,
                 Formatting.Indented,
-                new JsonSerializerSettings { ContractResolver = new ShouldSerializeContractResolver() }
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new ShouldSerializeContractResolver(),
+                    TraceWriter = new SerilogTraceWriter()
+                }
             );
         }
     }

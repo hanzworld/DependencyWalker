@@ -36,6 +36,7 @@ namespace DependencyWalker
             settings.Converters.Add(new ProjectInSolutionConverter());
             settings.Converters.Add(new SolutionDependencyTreeConverter());
             settings.Converters.Add(new PackageDependencyConverter());
+            settings.TraceWriter = new SerilogTraceWriter();
 
             return JsonConvert.DeserializeObject<SolutionDependencyTree>(
                 File.ReadAllText(path), settings);

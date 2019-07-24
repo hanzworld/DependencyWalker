@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
@@ -27,6 +28,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using NuGet;
+using Serilog;
+using Serilog.Events;
 
 [assembly: InternalsVisibleTo("DependencyWalkerTests")]
 namespace DependencyWalker
@@ -239,6 +242,22 @@ namespace DependencyWalker
         {
             serializer.Serialize(writer, value);
         }
+    }
+
+    public class SerilogTraceWriter : ITraceWriter
+    {
+        public TraceLevel LevelFilter
+        {
+            // trace all messages. nlog can handle filtering
+            get { return TraceLevel.Verbose; }
+        }
+
+        public void Trace(TraceLevel level, string message, Exception ex)
+        {
+            // log Json.NET message to NLog
+            Log.Write(LogEventLevel.Verbose, ex, message);
+        }
+
     }
 
 }
