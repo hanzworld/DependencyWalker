@@ -14,7 +14,6 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  # This workflow contains a single job called "build"
   pre-release:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -26,16 +25,31 @@ jobs:
         with:
           ref: ${{ github.head_ref }}   # checkout the correct branch name
           fetch-depth: 0                # fetch the whole repo history
+                
+      - name: Build
+        run: dotnet build DependencyWalker -o .\package -c Release
+        
 
       - name: Git Version
         uses: codacy/git-version@2.2.0
+        with:
+          prefix: "v"
+      
+      - name: Create a .zip file
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: 'DependencyWalker-$VERSION.zip'
+          path: .\package
+          type: zip
+          exclusions: '*.pdb'
         
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
-          prerelease: true
-          title: "Development Build"
+          prerelease: true          
+          title: "Development build (may not be stable)"
           files: |
-            LICENSE.txt
-            *.jar
+            LICENSE.md
+            *.zip
+            *.tar
