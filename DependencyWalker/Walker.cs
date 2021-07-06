@@ -59,13 +59,15 @@ namespace DependencyWalker
 
             List<Project> projects = new List<Project>();
 
-            var sln = SolutionFile.Parse(solutionToAnalyse);
-            {
-
-                foreach (var p in sln.ProjectsInOrder.Where(p => p.ProjectType == SolutionProjectType.KnownToBeMSBuildFormat))
+            using (new MonoHack()){
+                var sln = SolutionFile.Parse(solutionToAnalyse);
                 {
-                    var project = projectCollection.LoadProject(p.AbsolutePath);
-                    projects.Add(project);
+
+                    foreach (var p in sln.ProjectsInOrder.Where(p => p.ProjectType == SolutionProjectType.KnownToBeMSBuildFormat))
+                    {
+                        var project = projectCollection.LoadProject(p.AbsolutePath);
+                        projects.Add(project);
+                    }
                 }
             }
 
