@@ -65,7 +65,9 @@ namespace DependencyWalker
 
                     foreach (var p in sln.ProjectsInOrder.Where(p => p.ProjectType == SolutionProjectType.KnownToBeMSBuildFormat))
                     {
-                        var project = projectCollection.LoadProject(p.AbsolutePath);
+                        
+                        // parsing fails in Mono with the default "15.0" as /usr/lib/mono/xbuild/15.0/bin/Microsoft.CSharp.targets not found
+                        var project = projectCollection.LoadProject(p.AbsolutePath, MonoHack.IsMono ? "14.0" : null);
                         projects.Add(project);
                     }
                 }
