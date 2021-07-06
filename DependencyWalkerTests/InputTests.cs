@@ -82,7 +82,7 @@ namespace DependencyWalkerTests
                 .Packages.First(pa => pa.Package.Id == "App.Logging")
                 .UnresolvedDependencies;
 
-            Assert.Equal(1, UnresolvedDependencies.Count);
+            Assert.Single(UnresolvedDependencies);
         }
 
         [Fact]

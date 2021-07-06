@@ -140,7 +140,7 @@ namespace DependencyWalkerTests
                 .Where(d => d.Attribute("Category").Value == "Transitive Dependency")
                 .Select(p => (p.Attribute("Source").Value, p.Attribute("Target").Value));
 
-            Assert.Equal(1, transitiveLinks.Count());
+            Assert.Single(transitiveLinks);
             Assert.Contains(("ExcelDataReader", "SharpZipLib"), transitiveLinks);
         }
 
