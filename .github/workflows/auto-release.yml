@@ -36,10 +36,10 @@ jobs:
           prefix: "v"
       
       - name: Create a .zip file
-        uses: thedoctor0/zip-release@master
+        uses: thedoctor0/zip-release@0.4.2
         with:
           filename: 'DependencyWalker-$VERSION.zip'
-          path: .\package
+          path: package
           type: zip
           exclusions: '*.pdb'
         
