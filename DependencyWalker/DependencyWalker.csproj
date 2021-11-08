@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.Build" Version="16.10.0" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.10.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NuGet.Core" Version="2.14.0" />
     <PackageReference Include="Serilog" Version="2.10.0" />
