@@ -7,7 +7,7 @@
 
  <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
-    <PackageReference Include="Microsoft.Build" Version="16.10.0" />
+    <PackageReference Include="Microsoft.Build" Version="17.2.0" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.10.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
