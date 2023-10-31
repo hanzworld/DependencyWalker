@@ -119,7 +119,7 @@ namespace DependencyWalker
         private INugetDependencyTree WalkNuget(Project project)
         {
             //create a Nuget dependency tree for that project
-            var tree = new NugetDependencyTree(new DirectoryInfo(project.DirectoryPath));
+            var tree = new NugetDependencyTree(project);
             //find the first level of packages
             ConcurrentBag<IPackage> collection = new ConcurrentBag<IPackage>();
             {

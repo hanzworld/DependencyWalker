@@ -58,7 +58,7 @@ namespace DependencyWalkerTests
         public void FindsProjects()
         {
             var projects = fixture.WalkerUnderTest.Load();
-            Assert.Equal(3, projects.Count);
+            Assert.Equal(5, projects.Count);
         }
 
         [Fact]
@@ -106,6 +106,28 @@ namespace DependencyWalkerTests
             Assert.Empty(project1dependencies);
             Assert.Contains(project2dependencies, p => p.Name == "FullFramework1");
             Assert.Contains(project3dependencies, p => p.Name == "FullFramework2");
+        }
+        
+        [Fact]
+        public void FindsPackageReferenceDependencies()
+        {
+
+            var tree = fixture.WalkerUnderTest.Walk();
+
+            var packageReferenceDependencies = tree.Projects.Single(p => p.Name.Contains("PackageReferenceProject")).NugetDependencyTree.Packages;
+
+            Assert.Contains(packageReferenceDependencies, p => p.Package.Id == "AutoMapper");
+        }
+        
+        [Fact]
+        public void FindsCentralPackageManagementReferenceDependencies()
+        {
+
+            var tree = fixture.WalkerUnderTest.Walk();
+
+            var packageReferenceDependencies = tree.Projects.Single(p => p.Name.Contains("CentralPackageManagementProject")).NugetDependencyTree.Packages;
+
+            Assert.Contains(packageReferenceDependencies, p => p.Package.Id == "Serilog");
         }
     }
 }

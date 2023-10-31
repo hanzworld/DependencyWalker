@@ -85,10 +85,12 @@ namespace DependencyWalkerTests
                 .Where(d => d.Attribute("Category").Value == "Project")
                 .Select(e => e.Attribute("Id").Value).ToList();
 
-            Assert.Equal(3, projects.Count());
+            Assert.Equal(5, projects.Count());
+            Assert.Contains("CentralPackageManagementProject", projects);
             Assert.Contains("FullFramework1", projects);
             Assert.Contains("FullFramework2", projects);
             Assert.Contains("FullFramework3", projects);
+            Assert.Contains("PackageReferenceProject", projects);
         }
 
         [Fact]
@@ -98,11 +100,13 @@ namespace DependencyWalkerTests
                 .Where(d => d.Attribute("Category").Value == "Package")
                 .Select(e => e.Attribute("Id").Value).ToList();
 
-            Assert.Equal(6, packages.Count());
+            Assert.Equal(9, packages.Count());
             Assert.Contains("Newtonsoft.Json", packages);
             Assert.Contains("RestSharp", packages);
             Assert.Contains("ExcelDataReader", packages);
             Assert.Contains("SharpZipLib", packages);
+            Assert.Contains("Serilog", packages);
+            Assert.Contains("AutoMapper", packages);
         }
 
         [Fact]
@@ -125,12 +129,14 @@ namespace DependencyWalkerTests
                 .Where(d => d.Attribute("Category").Value == "Package Reference")
                 .Select(p => (p.Attribute("Source").Value, p.Attribute("Target").Value));
 
-            Assert.Equal(5, packageLinks.Count());
+            Assert.Equal(7, packageLinks.Count());
+            Assert.Contains(("CentralPackageManagementProject", "Serilog"), packageLinks);
             Assert.Contains(("FullFramework1", "Newtonsoft.Json"), packageLinks);
             Assert.Contains(("FullFramework1", "RestSharp"), packageLinks);
             Assert.Contains(("FullFramework2", "Newtonsoft.Json"), packageLinks);
             Assert.Contains(("FullFramework3", "ExcelDataReader"), packageLinks);
             Assert.Contains(("FullFramework3", "SharpZipLib"), packageLinks);
+            Assert.Contains(("PackageReferenceProject", "AutoMapper"), packageLinks);
         }
 
         [Fact]
@@ -138,10 +144,11 @@ namespace DependencyWalkerTests
         {
             var transitiveLinks = links
                 .Where(d => d.Attribute("Category").Value == "Transitive Dependency")
-                .Select(p => (p.Attribute("Source").Value, p.Attribute("Target").Value));
+                .Select(p => (p.Attribute("Source").Value, p.Attribute("Target").Value)).ToList();
 
-            Assert.Single(transitiveLinks);
+            Assert.Equal(2, transitiveLinks.Count());
             Assert.Contains(("ExcelDataReader", "SharpZipLib"), transitiveLinks);
+            Assert.Contains(("Serilog", "System.ValueTuple"), transitiveLinks);
         }
 
     }

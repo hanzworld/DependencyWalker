@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullFramework2", "FullFrame
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullFramework3", "FullFramework3\FullFramework3.csproj", "{40AD63B6-97FC-4F6C-A485-5375E8EFCDBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageReferenceProject", "PackageReferenceProject\PackageReferenceProject.csproj", "{F3295269-C2C6-4B40-88E8-98FE697114AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CentralPackageManagementProject", "CentralPackageManagementProject\CentralPackageManagementProject.csproj", "{8D46AE3E-A79A-4A8A-9264-C16C0DA7DB08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{40AD63B6-97FC-4F6C-A485-5375E8EFCDBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40AD63B6-97FC-4F6C-A485-5375E8EFCDBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40AD63B6-97FC-4F6C-A485-5375E8EFCDBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3295269-C2C6-4B40-88E8-98FE697114AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3295269-C2C6-4B40-88E8-98FE697114AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3295269-C2C6-4B40-88E8-98FE697114AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3295269-C2C6-4B40-88E8-98FE697114AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D46AE3E-A79A-4A8A-9264-C16C0DA7DB08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D46AE3E-A79A-4A8A-9264-C16C0DA7DB08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D46AE3E-A79A-4A8A-9264-C16C0DA7DB08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D46AE3E-A79A-4A8A-9264-C16C0DA7DB08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -19,6 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DependencyWalker.NugetDependencyResolution;
+using Microsoft.Build.Evaluation;
 using Newtonsoft.Json;
 using NuGet;
 
@@ -29,16 +31,16 @@ namespace DependencyWalker.Model
     {
         public List<INugetDependency> Packages { get; }
         [JsonIgnore]
-        public PackageReferenceFile Source { get; }
+        public IFileWithNugetDependencies Source { get; }
 
         public NugetDependencyTree()
         {
             Packages = new List<INugetDependency>();    
         }
-        public NugetDependencyTree(FileSystemInfo directory)
+        public NugetDependencyTree(Project project)
         {
             Packages = new List<INugetDependency>();
-            Source = new PackageReferenceFile(Path.Combine(directory.FullName, "packages.config"));
+            Source = new DependencyFormatDeterminer(project).LoadFileThatSpecifiesNugetDependencies();
         }
         
         internal void AddRoots(List<IPackage> list)
