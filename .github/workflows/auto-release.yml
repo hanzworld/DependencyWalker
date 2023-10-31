@@ -31,15 +31,15 @@ jobs:
         
 
       - name: Git Version
-        uses: codacy/git-version@2.2.0
+        uses: codacy/git-version@2.7.1
         with:
           prefix: "v"
       
       - name: Create a .zip file
-        uses: thedoctor0/zip-release@0.4.2
+        uses: thedoctor0/zip-release@0.7.5
         with:
           filename: 'DependencyWalker-$VERSION.zip'
-          path: package
+          path: .\package
           type: zip
           exclusions: '*.pdb'
         
