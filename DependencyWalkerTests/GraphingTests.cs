@@ -41,7 +41,7 @@ namespace DependencyWalkerTests
             {
                 PackageRepositories.Add(PackageRepositoryFactory.Default.CreateRepository(uri));
             }
-            var walker = new Walker(Path.GetFullPath(@"..\..\..\TestSolution\TestSolution.sln"), PackageRepositories, false);  
+            var walker = new Walker(Path.GetFullPath(@"..\..\..\TestSolutions\TestSolution.sln"), PackageRepositories, false);  
             walker.Load();
             Tree = walker.Walk();
 
