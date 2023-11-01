@@ -85,7 +85,7 @@ namespace DependencyWalkerTests
         public void DoesNotSerialiseEmptyCollections()
         {
             var tree = JObject.Parse(fixture.SerializedTree);
-            var collection = tree["Projects"][0]["NugetDependencyTree"]["Packages"][0]["FoundDependencies"];
+            var collection = tree["Projects"][1]["NugetDependencyTree"]["Packages"][0]["FoundDependencies"];
             Assert.Null(collection);
             
         }
