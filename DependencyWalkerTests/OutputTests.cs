@@ -89,9 +89,8 @@ namespace DependencyWalkerTests
         {
             var tree = JObject.Parse(fixture.SerializedTree);
             testOutputHelper.WriteLine(tree.ToString());
-            var collection = tree["Projects"][0]["NugetDependencyTree"]["Packages"][0]["FoundDependencies"];
+            var collection = tree["Projects"][1]["NugetDependencyTree"]["Packages"][0]["FoundDependencies"];
             Assert.Null(collection);
-            
         }
         
         [Fact]

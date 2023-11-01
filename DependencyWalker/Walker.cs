@@ -97,7 +97,7 @@ namespace DependencyWalker
             );
 
             var masterTree = new SolutionDependencyTree(solutionToAnalyse);
-            masterTree.Projects.AddRange(collection.ToList());
+            masterTree.Projects.AddRange(collection.OrderBy(p => p.Name).ToList());
             return masterTree;
         }
 
