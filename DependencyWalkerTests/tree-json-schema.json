@@ -103,7 +103,7 @@
       "title": "The Solutiontoanalyse Schema",
       "default": "",
       "examples": [
-        "..\\..\\..\\TestSolution\\TestSolution.sln"
+        "..\\..\\..\\TestSolutions\\TestSolution.sln"
       ],
       "pattern": "^(.*)$"
     }
