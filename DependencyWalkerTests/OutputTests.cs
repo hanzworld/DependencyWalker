@@ -25,6 +25,7 @@ using Newtonsoft.Json;
 using System.IO;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Linq;
+using Xunit.Abstractions;
 
 namespace DependencyWalkerTests
 {
@@ -58,10 +59,12 @@ namespace DependencyWalkerTests
     public class OutputTests : IClassFixture<OutputFixture>
     {
         private readonly OutputFixture fixture;
+        private readonly ITestOutputHelper testOutputHelper;
 
-        public OutputTests(OutputFixture fixture)
+        public OutputTests(ITestOutputHelper testOutputHelper, OutputFixture fixture)
         {
             this.fixture = fixture;
+            this.testOutputHelper = testOutputHelper;
         }
 
         [Fact]
@@ -85,6 +88,7 @@ namespace DependencyWalkerTests
         public void DoesNotSerialiseEmptyCollections()
         {
             var tree = JObject.Parse(fixture.SerializedTree);
+            testOutputHelper.WriteLine(tree.ToString());
             var collection = tree["Projects"][0]["NugetDependencyTree"]["Packages"][0]["FoundDependencies"];
             Assert.Null(collection);
             
