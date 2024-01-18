@@ -55,7 +55,7 @@ namespace DependencyWalker.NugetDependencyResolution
 
         private PackageReference CreatePackageReferenceWithPropsFile(ProjectItem packageReference)
         {
-            var item = CmpPackageReferences.FirstOrDefault(reference => reference.Id == packageReference.EvaluatedInclude);
+            var item = CmpPackageReferences.FirstOrDefault(reference => reference.Id.Equals(packageReference.EvaluatedInclude, StringComparison.CurrentCultureIgnoreCase));
             return CreatePackageReference(packageReference.EvaluatedInclude, item.Version);
         }
 
