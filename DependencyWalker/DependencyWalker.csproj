@@ -23,4 +23,12 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <None Remove="Model\Interfaces\" />
+    <None Remove="Helpers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\Interfaces\" />
+    <Folder Include="Helpers\" />
+  </ItemGroup>
 </Project>
