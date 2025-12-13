@@ -1,3 +1,25 @@
+# ELI5
+Ever worked on a monolithic legacy .NET repository?
+
+Dependency management can fall by the wayside pretty quickly, leading to hacks and workarounds. This can make it hard to
+1. Keep up to date with security patches
+2. Refactor or split out parts of the monorepo
+3. Use out of the box tools (e.g. code scanning, CI/CD pipelines, GitHub dependency graphs)
+4. Identify and resolve DLL version mismatches caused by prolific use of binding redirects as a workaround for invalid dependency trees
+5. Upgrade to newer .NET versions
+6. Move to modern .NET tooling e.g. newer SDK-style csproj files
+
+Born from my professional years at Xero, this is a tool to help identify a monolithic repository's Nuget dependency tree.
+
+You can use it to answer questions like:
+- What relies on Package A? (What do I need to unpick to remove this dependency?)
+- What indirectly relies on Package B? (Where is this transitive dependency coming from?)
+- Package C Version 1.0 has a security bug, but I can't see what is using it. Where is it used?
+- Where are there circular or self-referential dependency graphs? (particularly in organisations who self-publish packages)
+- Where am I using different versions of the same package?
+
+This tool has been used in real-world environments to successfully fix the Nuget dependency tree of a 15 year old, .NET 4.7.2, 2-million line repository of a large SaaS product.
+
 # How to use
 
 Run DependencyWalker.exe with -? or --help flags for documentation on parameters.
@@ -24,7 +46,7 @@ Parameter | Description | Example Usage
 ### Graph
 `DependencyWalker.exe graph <options>`
 
-This mode takes a previously performed analysis (the more expensive and time consuming part of the process) and allows you to regraph part of the dependency tree e.g. isolate specific dependency. This does not require internet activity.
+This mode takes a previously performed analysis (the more expensive and time consuming part of the process) and allows you to regraph part of the dependency tree e.g. isolate specific dependency. This does not require internet connectivity.
 
 It outputs one artifact:
 - a DGML graph visualising the heirarchy for the filtered dependencies (if specified, otherwise it will show the full dependency tree) (`mydgml.dgml`)
