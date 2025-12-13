@@ -35,3 +35,4 @@ packages/
 /DependencyWalker/mydgml.dgml
 *.dgml
 /package
+.DS_Store
